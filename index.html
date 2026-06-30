@@ -275,10 +275,10 @@
 <div class="modal-bg" id="storyModal">
   <div class="modal">
     <span class="modal-label">✦ CASE FILE ✦</span>
-    <h2>Tonight’s Case</h2>
-    <p>The rain hadn’t let up since Tuesday. Neither had the case.</p>
-    <p>Viktor Crane was found dead in his study at half past midnight — no forced entry, no weapon, every door locked from the inside. The only thing out of place: a single word, scratched into the dust on his desk.</p>
-    <p>Five letters. The key to how Crane died — and who made sure he would.</p>
+    <h2>The Blue Note Affair</h2>
+    <p>The rain came down hard on Delancey Street the night the Blue Note Jazz Club burned.</p>
+    <p>Fire marshals pulled the body of club owner “Lucky” Dolan from the wreckage at half past two. Faulty wiring, they said. Case closed. Except Lucky kept the real books — and someone needed those books gone.</p>
+    <p>The detective arrived before the investigators left. Scratched into the scorched brass nameplate above the door was a single word. Not a cry for help. A confession.</p>
     <hr>
     <p><strong>Can you crack the cipher in 6 guesses?</strong></p>
     <div class="modal-btns">
@@ -317,7 +317,7 @@
 <script>
 (function () {
   /* ── WORD LISTS ── */
-  const ANSWER = "ALIBI";
+  const ANSWER = "EMBER";
 
   // Cache so the same word isn't looked up twice
   const wordCache = {};
@@ -790,7 +790,7 @@
       document.getElementById('endSub').textContent =
         'Case cracked in ' + tries + ' guess' + (tries === 1 ? '' : 'es') + '.';
       document.getElementById('endFlav').textContent =
-        'The word scratched in the dust was ALIBI. Crane\'s killer counted on no one finding it.';
+        'The word scratched into the brass was EMBER. Someone left their signature in the ashes.';
     } else {
       document.getElementById('endTitle').textContent = 'The trail goes cold.';
       document.getElementById('endSub').textContent = 'The answer was ' + answer + '.';
