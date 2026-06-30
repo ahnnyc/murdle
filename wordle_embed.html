@@ -1,0 +1,534 @@
+<style>
+  :root{
+    --bg:#121213;
+    --panel:#121213;
+    --border:#3a3a3c;
+    --border-empty:#3a3a3c;
+    --text:#ffffff;
+    --green:#538d4e;
+    --yellow:#b59f3b;
+    --gray:#3a3a3c;
+    --key-bg:#818384;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    height:100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #app{
+    max-width:500px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    height:100%;
+    min-height:100vh;
+    padding:8px 8px 16px;
+  }
+  header{
+    width:100%;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    padding:10px 0 12px;
+    margin-bottom:14px;
+    position:relative;
+  }
+  header h1{
+    margin:0;
+    font-size:2rem;
+    letter-spacing:0.08em;
+    font-weight:700;
+  }
+  #newGameBtn{
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:4px;
+    padding:6px 10px;
+    font-size:0.75rem;
+    cursor:pointer;
+  }
+  #newGameBtn:hover{ background:#2a2a2c; }
+
+  #board{
+    display:grid;
+    grid-template-rows:repeat(6, 1fr);
+    gap:5px;
+    margin-bottom:18px;
+    width:100%;
+    max-width:330px;
+    flex:0 0 auto;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:5px;
+  }
+  .tile{
+    aspect-ratio:1;
+    border:2px solid var(--border-empty);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    user-select:none;
+    transition: transform 0.1s;
+  }
+  .tile.filled{
+    border-color:#565758;
+    animation: pop 0.1s ease;
+  }
+  @keyframes pop{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.06);}
+    100%{transform:scale(1);}
+  }
+  .tile.flip{
+    animation: flip 0.5s ease forwards;
+  }
+  @keyframes flip{
+    0%{transform:rotateX(0deg);}
+    50%{transform:rotateX(90deg);}
+    100%{transform:rotateX(0deg);}
+  }
+  .tile.correct{ background:var(--green); border-color:var(--green); }
+  .tile.present{ background:var(--yellow); border-color:var(--yellow); }
+  .tile.absent{ background:var(--gray); border-color:var(--gray); }
+
+  .shake{
+    animation: shake 0.5s;
+  }
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);}
+    20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-8px);}
+    40%,60%{transform:translateX(8px);}
+  }
+
+  .bounce .tile{
+    animation: bounce 0.5s ease;
+  }
+  @keyframes bounce{
+    0%,100%{transform:translateY(0);}
+    30%{transform:translateY(-14px);}
+    50%{transform:translateY(0);}
+  }
+
+  #message{
+    min-height:24px;
+    margin-bottom:10px;
+    font-weight:600;
+    font-size:0.95rem;
+    text-align:center;
+    background:#fff;
+    color:#121213;
+    padding: 4px 14px;
+    border-radius:4px;
+    opacity:0;
+    transition:opacity 0.2s;
+    position:relative;
+  }
+  #message.show{ opacity:1; }
+
+  #keyboard{
+    width:100%;
+    max-width:500px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:auto;
+  }
+  .krow{
+    display:flex;
+    justify-content:center;
+    gap:5px;
+  }
+  .key{
+    background:var(--key-bg);
+    color:var(--text);
+    border:none;
+    border-radius:4px;
+    font-weight:700;
+    font-size:0.8rem;
+    text-transform:uppercase;
+    height:48px;
+    flex:1;
+    max-width:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .key.wide{ max-width:62px; font-size:0.65rem; }
+  .key:active{ filter:brightness(0.85); }
+  .key.correct{ background:var(--green); }
+  .key.present{ background:var(--yellow); }
+  .key.absent{ background:#3a3a3c; color:#888; }
+
+  #overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:10;
+  }
+  #overlay.show{ display:flex; }
+  #overlayBox{
+    background:#1a1a1b;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:24px 28px;
+    text-align:center;
+    max-width:320px;
+  }
+  #overlayBox h2{ margin:0 0 8px; font-size:1.4rem; }
+  #overlayBox p{ margin:4px 0; color:#ccc; font-size:0.95rem; }
+  #overlayBox button{
+    margin-top:14px;
+    background:var(--green);
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:4px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:0.9rem;
+  }
+</style>
+
+<div id="app">
+  <header>
+    <h1>WORDLE</h1>
+    <button id="newGameBtn">New Game</button>
+  </header>
+
+  <div id="message"></div>
+  <div id="board"></div>
+  <div id="keyboard"></div>
+</div>
+
+<div id="overlay">
+  <div id="overlayBox">
+    <h2 id="overlayTitle"></h2>
+    <p id="overlaySub"></p>
+    <button id="overlayBtn">Play Again</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---- Word lists ----
+  const ANSWERS = ["ABOUT","OTHER","WHICH","THEIR","THERE","FIRST","WOULD","THESE","CLICK","PRICE",
+  "STATE","NEVER","BECOME","WHILE","HOUSE","WORLD","BELOW","ASKED","GOING","WATER",
+  "AFTER","WORDS","FOUND","STILL","EVERY","GREAT","THINK","STORY","POINT","RIGHT",
+  "STUDY","SOUND","PLACE","YEARS","TODAY","MUSIC","FRESH","BLEND","BROWN","CRANE",
+  "FLAME","GHOST","HOUND","JUICE","KNEEL","LEMON","MIRTH","NORTH","OCEAN","PIANO",
+  "QUEST","RIVER","SOLAR","TIGER","UMBER","VAPOR","WHALE","XENON","YOUTH","ZEBRA",
+  "PLANT","CLOUD","SUGAR","BREAD","CHESS","DANCE","EAGLE","FROST","GRAPE","HONEY"
+  ].filter(w=>w.length===5);
+
+  // Larger guess-allowed list (answers + extra valid words)
+  const EXTRA_VALID = ["ABYSS","ACTOR","ADAPT","ADULT","AGENT","ALARM","ALBUM","ALERT","ALIVE","ALLOY",
+  "ALOFT","AMBER","ANGEL","ANGRY","APPLE","ARGUE","ARISE","ARMOR","AROMA","ARROW",
+  "ASSET","AUDIO","AVOID","AWAIT","AWARD","BADGE","BAKER","BASIC","BEACH","BEGIN",
+  "BENCH","BERRY","BIRTH","BLACK","BLADE","BLANK","BLAST","BLOOM","BOARD","BOAST",
+  "BONUS","BOOST","BRAVE","BREAK","BRICK","BRIEF","BRING","BROAD","BUILD","BUNCH",
+  "CABLE","CANDY","CARGO","CARVE","CHAIN","CHAIR","CHALK","CHARM","CHASE","CHEAP",
+  "CHECK","CHEST","CHIEF","CHILD","CHILL","CHIME","CHOIR","CHORD","CIVIC","CLAIM",
+  "CLASH","CLASS","CLEAN","CLEAR","CLERK","CLIFF","CLIMB","CLOSE","COACH","COAST",
+  "COVER","CRAFT","CRASH","CRAZY","CREAM","CREDO","CREST","CRISP","CROWD","CROWN",
+  "CRUSH","CURVE","DAILY","DELAY","DEPTH","DIGIT","DIRTY","DOUBT","DOZEN","DRAFT",
+  "DRAIN","DREAM","DRESS","DRIFT","DRINK","DRIVE","DROWN","DRYER","EARLY","EARTH",
+  "ELBOW","EMPTY","ENEMY","ENJOY","ENTER","ENTRY","EQUAL","EXACT","EXIST","EXTRA",
+  "FAITH","FALSE","FANCY","FAULT","FENCE","FIBER","FIELD","FIFTH","FIGHT","FINAL",
+  "FLASH","FLEET","FLOOR","FLUID","FOCAL","FORCE","FORGE","FORTH","FORUM","FRAME",
+  "FRANK","FRAUD","FRUIT","GIANT","GLASS","GLOBE","GLORY","GRACE","GRAND","GRANT",
+  "GRASS","GREEN","GRIEF","GRILL","GROUP","GROWN","GUARD","GUESS","GUEST","GUIDE",
+  "HABIT","HAPPY","HARSH","HEART","HEAVY","HELLO","HENCE","HOBBY","HONOR","HORSE",
+  "HOTEL","HUMAN","IDEAL","IMAGE","IMPLY","INDEX","INNER","INPUT","ISSUE","IVORY",
+  "JOINT","JUDGE","KNIFE","KNOCK","KNOWN","LABEL","LARGE","LAUGH","LAYER","LEARN",
+  "LEAST","LEAVE","LEGAL","LEVEL","LIGHT","LIMIT","LOCAL","LOGIC","LOOSE","LOWER",
+  "LOYAL","LUCKY","LUNAR","MAGIC","MAJOR","MAKER","MARCH","MATCH","MAYOR","MEDIA",
+  "MELON","MERIT","METAL","MINOR","MODEL","MONEY","MONTH","MORAL","MOTOR","MOUNT",
+  "MOUSE","MOUTH","MOVIE","NAKED","NASTY","NERVE","NIGHT","NOBLE","NOISE","NOVEL",
+  "NURSE","OFFER","OLIVE","ORBIT","ORDER","OUTER","OWNER","PALACE","PANEL","PAPER",
+  "PASTA","PATCH","PAUSE","PEACE","PHASE","PHONE","PHOTO","PILOT","PITCH","PIXEL",
+  "PLAIN","PLANE","POUND","POWER","PRIDE","PRIME","PRINT","PRIOR","PRIZE","PROOF",
+  "PROUD","PROVE","PULSE","PUPIL","QUICK","QUIET","QUOTE","RADAR","RADIO","RAISE",
+  "RALLY","RANGE","RAPID","RATIO","REACH","REPLY","RIDGE","RIGID","ROBOT","ROUGH",
+  "ROUND","ROUTE","ROYAL","RURAL","SADLY","SALAD","SCALE","SCENE","SCOPE","SCORE",
+  "SCOUT","SENSE","SERVE","SEVEN","SHADE","SHAPE","SHARE","SHARP","SHELF","SHELL",
+  "SHIFT","SHINE","SHIRT","SHOCK","SHORE","SHORT","SHOWN","SIGHT","SIGMA","SILLY",
+  "SIXTH","SKILL","SLEEP","SLICE","SLOPE","SMALL","SMART","SMILE","SMOKE","SOLID",
+  "SOLVE","SORRY","SOUTH","SPACE","SPARE","SPEAK","SPEED","SPELL","SPEND","SPENT",
+  "SPLIT","SPORT","STAFF","STAGE","STAIR","STAND","START","STEAM","STEEL","STEEP",
+  "STICK","STIFF","STORM","SUITE","SUPER","SWEET","SWIFT","SWING","TABLE","TASTE",
+  "TEACH","TEETH","TEMPO","TENSE","THANK","THEME","THICK","THING","THIRD","THREE",
+  "THROW","TIGHT","TITLE","TODAY","TOTAL","TOUCH","TOUGH","TOWER","TRACK","TRADE",
+  "TRAIN","TREAT","TREND","TRIAL","TRIBE","TRICK","TRUCK","TRULY","TRUNK","TRUST",
+  "TRUTH","TWICE","UNCLE","UNDUE","UNION","UNITE","UNITY","UPPER","URBAN","USAGE",
+  "USUAL","VALID","VALUE","VIDEO","VIRUS","VISIT","VITAL","VOICE","WASTE","WATCH",
+  "WEIGH","WHEEL","WHILE","WHITE","WHOLE","WOMAN","WORTH","WOUND","WRIST","WRITE",
+  "YIELD"].filter(w=>w.length===5);
+
+  const VALID_GUESSES = new Set([...ANSWERS, ...EXTRA_VALID]);
+
+  const ROWS = 6, COLS = 5;
+  let answer = "";
+  let currentRow = 0;
+  let currentCol = 0;
+  let board = [];
+  let gameOver = false;
+  let keyStates = {};
+
+  const boardEl = document.getElementById('board');
+  const keyboardEl = document.getElementById('keyboard');
+  const messageEl = document.getElementById('message');
+  const overlay = document.getElementById('overlay');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlaySub = document.getElementById('overlaySub');
+  const overlayBtn = document.getElementById('overlayBtn');
+  const newGameBtn = document.getElementById('newGameBtn');
+
+  function pickAnswer(){
+    return ANSWERS[Math.floor(Math.random()*ANSWERS.length)];
+  }
+
+  function buildBoard(){
+    boardEl.innerHTML = '';
+    board = [];
+    for(let r=0;r<ROWS;r++){
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      rowEl.id = 'row-'+r;
+      const rowData = [];
+      for(let c=0;c<COLS;c++){
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.id = 'tile-'+r+'-'+c;
+        rowEl.appendChild(tile);
+        rowData.push('');
+      }
+      boardEl.appendChild(rowEl);
+      board.push(rowData);
+    }
+  }
+
+  const KEY_ROWS = [
+    "QWERTYUIOP".split(""),
+    "ASDFGHJKL".split(""),
+    ["ENTER","Z","X","C","V","B","N","M","BACK"]
+  ];
+
+  function buildKeyboard(){
+    keyboardEl.innerHTML = '';
+    keyStates = {};
+    KEY_ROWS.forEach(rowKeys=>{
+      const krow = document.createElement('div');
+      krow.className = 'krow';
+      rowKeys.forEach(k=>{
+        const btn = document.createElement('button');
+        btn.className = 'key' + ((k==="ENTER"||k==="BACK") ? ' wide':'');
+        btn.textContent = k === 'BACK' ? '⌫' : (k === 'ENTER' ? 'ENTER' : k);
+        btn.dataset.key = k;
+        btn.addEventListener('click', ()=>handleKey(k));
+        krow.appendChild(btn);
+      });
+      keyboardEl.appendChild(krow);
+    });
+  }
+
+  function showMessage(msg, persist){
+    messageEl.textContent = msg;
+    messageEl.classList.add('show');
+    if(!persist){
+      clearTimeout(showMessage._t);
+      showMessage._t = setTimeout(()=>{
+        messageEl.classList.remove('show');
+      }, 1400);
+    }
+  }
+
+  function handleKey(k){
+    if(gameOver) return;
+    if(k === 'BACK'){
+      if(currentCol > 0){
+        currentCol--;
+        board[currentRow][currentCol] = '';
+        updateTile(currentRow, currentCol);
+      }
+      return;
+    }
+    if(k === 'ENTER'){
+      submitGuess();
+      return;
+    }
+    if(/^[A-Z]$/.test(k)){
+      if(currentCol < COLS){
+        board[currentRow][currentCol] = k;
+        updateTile(currentRow, currentCol);
+        currentCol++;
+      }
+    }
+  }
+
+  function updateTile(r,c){
+    const tile = document.getElementById('tile-'+r+'-'+c);
+    const letter = board[r][c];
+    tile.textContent = letter;
+    if(letter){
+      tile.classList.add('filled');
+    } else {
+      tile.classList.remove('filled');
+    }
+  }
+
+  function shakeRow(r){
+    const rowEl = document.getElementById('row-'+r);
+    rowEl.classList.add('shake');
+    setTimeout(()=>rowEl.classList.remove('shake'), 500);
+  }
+
+  function submitGuess(){
+    if(currentCol < COLS){
+      showMessage('Not enough letters');
+      shakeRow(currentRow);
+      return;
+    }
+    const guess = board[currentRow].join('');
+    if(!VALID_GUESSES.has(guess)){
+      showMessage('Not in word list');
+      shakeRow(currentRow);
+      return;
+    }
+
+    const result = scoreGuess(guess, answer);
+    revealRow(currentRow, result, guess, ()=>{
+      if(guess === answer){
+        gameOver = true;
+        setTimeout(()=>{
+          const rowEl = document.getElementById('row-'+currentRow);
+          rowEl.classList.add('bounce');
+          endGame(true);
+        }, 150);
+      } else if(currentRow === ROWS - 1){
+        gameOver = true;
+        endGame(false);
+      } else {
+        currentRow++;
+        currentCol = 0;
+      }
+    });
+  }
+
+  function scoreGuess(guess, answer){
+    const result = new Array(COLS).fill('absent');
+    const answerLetters = answer.split('');
+    const used = new Array(COLS).fill(false);
+
+    for(let i=0;i<COLS;i++){
+      if(guess[i] === answerLetters[i]){
+        result[i] = 'correct';
+        used[i] = true;
+      }
+    }
+    for(let i=0;i<COLS;i++){
+      if(result[i] === 'correct') continue;
+      const letter = guess[i];
+      let found = -1;
+      for(let j=0;j<COLS;j++){
+        if(!used[j] && answerLetters[j] === letter){
+          found = j; break;
+        }
+      }
+      if(found !== -1){
+        result[i] = 'present';
+        used[found] = true;
+      }
+    }
+    return result;
+  }
+
+  function revealRow(r, result, guess, callback){
+    let i = 0;
+    function step(){
+      if(i >= COLS){ callback(); return; }
+      const tile = document.getElementById('tile-'+r+'-'+i);
+      tile.classList.add('flip');
+      setTimeout(()=>{
+        tile.classList.add(result[i]);
+        updateKeyState(guess[i], result[i]);
+      }, 250);
+      setTimeout(()=>{
+        i++;
+        step();
+      }, 280);
+    }
+    step();
+  }
+
+  function updateKeyState(letter, state){
+    const rank = {absent:0, present:1, correct:2};
+    if(!(letter in keyStates) || rank[state] > rank[keyStates[letter]]){
+      keyStates[letter] = state;
+      const btn = keyboardEl.querySelector('[data-key="'+letter+'"]');
+      if(btn){
+        btn.classList.remove('absent','present','correct');
+        btn.classList.add(state);
+      }
+    }
+  }
+
+  function endGame(won){
+    setTimeout(()=>{
+      overlay.classList.add('show');
+      if(won){
+        const tries = currentRow + 1;
+        overlayTitle.textContent = 'You got it! 🎉';
+        overlaySub.textContent = 'Solved in ' + tries + ' / ' + ROWS + ' guesses.';
+      } else {
+        overlayTitle.textContent = 'So close!';
+        overlaySub.textContent = 'The word was ' + answer + '.';
+      }
+    }, 600);
+  }
+
+  function newGame(){
+    answer = pickAnswer();
+    currentRow = 0;
+    currentCol = 0;
+    gameOver = false;
+    overlay.classList.remove('show');
+    messageEl.classList.remove('show');
+    buildBoard();
+    buildKeyboard();
+    // console.log('answer:', answer); // debug
+  }
+
+  document.addEventListener('keydown', (e)=>{
+    if(overlay.classList.contains('show')) return;
+    const key = e.key.toUpperCase();
+    if(key === 'ENTER') handleKey('ENTER');
+    else if(key === 'BACKSPACE') handleKey('BACK');
+    else if(/^[A-Z]$/.test(key)) handleKey(key);
+  });
+
+  overlayBtn.addEventListener('click', newGame);
+  newGameBtn.addEventListener('click', newGame);
+
+  newGame();
+})();
+</script>
