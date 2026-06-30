@@ -37,17 +37,17 @@
   header {
     width: 100%;
     border-bottom: 1px solid var(--noir-border);
-    padding: 10px 0 8px;
+    padding: clamp(5px, 1.5vh, 10px) 0 clamp(4px, 1.2vh, 8px);
     text-align: center;
   }
   header h1 {
-    font-size: 1.9rem;
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
     letter-spacing: 0.18em;
     color: var(--noir-gold);
     text-transform: uppercase;
   }
   header .sub {
-    font-size: 0.6rem;
+    font-size: clamp(0.5rem, 1.5vw, 0.6rem);
     letter-spacing: 0.22em;
     color: var(--noir-dim);
     margin-top: 2px;
@@ -60,8 +60,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
-    padding: 8px 8px 16px;
+    padding: clamp(4px, 1.5vh, 8px) 8px clamp(8px, 2vh, 16px);
   }
 
   /* ── MESSAGE TOAST ── */
@@ -85,16 +84,16 @@
   #board {
     display: grid;
     grid-template-rows: repeat(6, 1fr);
-    gap: 5px;
-    width: 100%;
+    gap: clamp(3px, 1.2vw, 5px);
+    width: min(330px, calc(100vw - 16px));
     max-width: 330px;
-    margin-bottom: 14px;
+    margin-bottom: clamp(6px, 1.5vh, 12px);
     flex: 0 0 auto;
   }
   .row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
+    gap: clamp(3px, 1.2vw, 5px);
   }
   .tile {
     aspect-ratio: 1;
@@ -102,7 +101,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.9rem;
+    font-size: clamp(1.1rem, 6vw, 1.9rem);
     font-weight: 700;
     text-transform: uppercase;
     user-select: none;
@@ -150,24 +149,24 @@
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-top: auto;
+    gap: clamp(4px, 1.5vw, 6px);
+    margin-top: clamp(6px, 2vh, 16px);
   }
   .krow {
     display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: clamp(3px, 1vw, 5px);
   }
   .key {
-    height: 56px;
+    height: clamp(40px, 11vw, 56px);
     flex: 1;
-    max-width: 42px;
+    max-width: clamp(30px, 9vw, 42px);
     border: 1px solid var(--noir-border);
     border-radius: 4px;
     background: var(--noir-key);
     color: var(--noir-text);
     font-family: inherit;
-    font-size: 0.78rem;
+    font-size: clamp(0.6rem, 2vw, 0.78rem);
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
@@ -177,7 +176,7 @@
     user-select: none;
     transition: background 0.1s;
   }
-  .key.wide { max-width: 64px; font-size: 0.65rem; }
+  .key.wide { max-width: clamp(44px, 13vw, 64px); font-size: clamp(0.5rem, 1.6vw, 0.65rem); }
   .key:active { filter: brightness(1.2); }
   /* Wordle-exact key colors after guesses */
   .key.correct { background: var(--wl-correct); border-color: var(--wl-correct); color: #fff; }
