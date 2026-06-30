@@ -276,8 +276,8 @@
 <div class="modal-bg" id="storyModal">
   <div class="modal">
     <span class="modal-label">✦ CASE FILE ✦</span>
-    <h2>Tonight's Case</h2>
-    <p>The rain hadn't let up since Tuesday. Neither had the case.</p>
+    <h2>Tonight’s Case</h2>
+    <p>The rain hadn’t let up since Tuesday. Neither had the case.</p>
     <p>Viktor Crane was found dead in his study at half past midnight — no forced entry, no weapon, every door locked from the inside. The only thing out of place: a single word, scratched into the dust on his desk.</p>
     <p>Five letters. The key to how Crane died — and who made sure he would.</p>
     <hr>
@@ -462,7 +462,7 @@
   "VIRUS","VISIT","VITAL","VOICE","WASTE","WATCH","WATER","WEIGH","WHEEL","WHILE","WHITE",
   "WHOLE","WOMAN","WORDS","WORLD","WORTH","WOULD","WOUND","WRITE","YEARS","YIELD","ZEBRA",
   "ABUZZ","ACHOO","ACMES","ACNED","ACRES","ACTED","ACUTE","ADMAN","ADOBE","AEGIS","AFOUL",
-  "AGAPE","AGAVE","AGLOW","AGONY","AGORA","AIDES","AIMER","AIRED","AISLE","ALARM","ALLAY",
+  "AGAPE","AGAVE,"AGLOW","AGONY","AGORA","AIDES","AIMER","AIRED","AISLE","ALARM","ALLAY",
   "ALLEY","ALLOT","ALLOW","ALLOY","ALOFT","ALONE","ALONG","ALOOF","ALOUD","ALTAR","AMASS",
   "AMAZE","AMBLE","AMEND","AMINO","AMISS","AMITY","AMONG","AMPLE","ANGST","ANIME","ANISE",
   "ANNEX","ANTIC","ANVIL","APHID","ARBOR","ARDOR","ARTSY","ASCOT","ASHEN","ASPEN","ASSAY",
@@ -747,6 +747,11 @@
       if (!valid) {
         showMessage('Not in word list');
         shakeRow(currentRow);
+        for (let c = 0; c < COLS; c++) {
+          board[currentRow][c] = '';
+          updateTile(currentRow, c);
+        }
+        currentCol = 0;
         return;
       }
       // Add to cache so the same word is instant next time
