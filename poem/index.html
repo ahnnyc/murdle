@@ -2,23 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="color-scheme" content="light">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poem</title>
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   /* ══════════════════════════════════════
-     NOIR THEME — backgrounds, chrome, text
+     EMILY DICKINSON THEME — backgrounds, chrome, text
      Game tile/key states stay Wordle-exact
      ══════════════════════════════════════ */
   :root {
-    --noir-bg:      #111009;
-    --noir-surface: #1a1712;
-    --noir-border:  #3d3217;
-    --noir-fill:    #5c4a1e;
-    --noir-text:    #e8d9b0;
-    --noir-dim:     #7a6a3a;
-    --noir-gold:    #c8a84b;
-    --noir-key:     #2e2710;
+    --lit-bg:      #faf5e9;    color-scheme: light;
+    --lit-surface: #f0e9d6;
+    --lit-border:  #c4a97d;
+    --lit-fill:    #7d5a3c;
+    --lit-text:    #2a1f14;
+    --lit-dim:     #8c7560;
+    --lit-gold:    #6b4c2a;
+    --lit-key:     #e8ddc8;
     /* Wordle-exact game colors — do not touch */
     --wl-correct: #6aaa64;
     --wl-present: #c9b458;
@@ -27,29 +28,31 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     height: 100%;
-    background: var(--noir-bg);
-    color: var(--noir-text);
-    font-family: 'Special Elite', 'Courier New', monospace;
+    background: var(--lit-bg);
+    color: var(--lit-text);
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
     -webkit-tap-highlight-color: transparent;
   }
 
   /* ── HEADER ── */
   header {
     width: 100%;
-    border-bottom: 1px solid var(--noir-border);
+    border-bottom: 1px solid var(--lit-border);
     padding: clamp(5px, 1.5vh, 10px) 0 clamp(4px, 1.2vh, 8px);
     text-align: center;
   }
   header h1 {
     font-size: clamp(1.4rem, 5vw, 1.9rem);
     letter-spacing: 0.18em;
-    color: var(--noir-gold);
-    text-transform: uppercase;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    color: var(--lit-text);
+    text-transform: none;
   }
   header .sub {
     font-size: clamp(0.5rem, 1.5vw, 0.6rem);
     letter-spacing: 0.22em;
-    color: var(--noir-dim);
+    color: var(--lit-dim);
     margin-top: 2px;
   }
 
@@ -71,8 +74,8 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-align: center;
-    background: var(--noir-text);
-    color: var(--noir-bg);
+    background: var(--lit-text);
+    color: var(--lit-bg);
     padding: 5px 16px;
     border-radius: 3px;
     opacity: 0;
@@ -97,7 +100,7 @@
   }
   .tile {
     aspect-ratio: 1;
-    border: 2px solid var(--noir-border);
+    border: 2px solid var(--lit-border);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -105,11 +108,11 @@
     font-weight: 700;
     text-transform: uppercase;
     user-select: none;
-    color: var(--noir-text);
-    background: var(--noir-bg);
+    color: var(--lit-text);
+    background: var(--lit-bg);
   }
   .tile.filled {
-    border-color: var(--noir-fill);
+    border-color: var(--lit-fill);
     animation: pop 0.1s ease;
   }
   /* Wordle-exact revealed colors */
@@ -161,10 +164,10 @@
     height: clamp(40px, 11vw, 56px);
     flex: 1;
     max-width: clamp(30px, 9vw, 42px);
-    border: 1px solid var(--noir-border);
+    border: 1px solid var(--lit-border);
     border-radius: 4px;
-    background: var(--noir-key);
-    color: var(--noir-text);
+    background: var(--lit-key);
+    color: var(--lit-text);
     font-family: inherit;
     font-size: clamp(0.6rem, 2vw, 0.78rem);
     font-weight: 700;
@@ -181,13 +184,13 @@
   /* Wordle-exact key colors after guesses */
   .key.correct { background: var(--wl-correct); border-color: var(--wl-correct); color: #fff; }
   .key.present { background: var(--wl-present); border-color: var(--wl-present); color: #fff; }
-  .key.absent  { background: #3a3a3c;           border-color: #3a3a3c;           color: #888; }
+  .key.absent  { background: #b0a898;           border-color: #b0a898;           color: #faf5e9; }
 
   /* ── MODALS ── */
   .modal-bg {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.78);
+    background: rgba(42, 31, 20, 0.72);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,8 +199,8 @@
   }
   .modal-bg.gone { display: none; }
   .modal {
-    background: var(--noir-surface);
-    border: 1px solid var(--noir-gold);
+    background: var(--lit-surface);
+    border: 1px solid var(--lit-gold);
     border-radius: 6px;
     padding: 30px 26px 24px;
     max-width: 360px;
@@ -210,29 +213,29 @@
     top: -10px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--noir-surface);
+    background: var(--lit-surface);
     padding: 0 12px;
     font-size: 0.6rem;
     letter-spacing: 0.25em;
-    color: var(--noir-gold);
+    color: var(--lit-gold);
     white-space: nowrap;
   }
   .modal h2 {
     font-size: 1.15rem;
     letter-spacing: 0.12em;
-    color: var(--noir-gold);
+    color: var(--lit-gold);
     text-transform: uppercase;
     margin-bottom: 14px;
   }
   .modal p {
     font-size: 0.88rem;
-    color: var(--noir-text);
+    color: var(--lit-text);
     line-height: 1.65;
     margin-bottom: 10px;
   }
   .modal hr {
     border: none;
-    border-top: 1px solid var(--noir-border);
+    border-top: 1px solid var(--lit-border);
     margin: 14px 0;
   }
   .modal-btns {
@@ -257,14 +260,14 @@
     border: 1px solid;
   }
   .btn-gold {
-    background: var(--noir-gold);
-    border-color: var(--noir-gold);
-    color: var(--noir-bg);
+    background: var(--lit-gold);
+    border-color: var(--lit-gold);
+    color: var(--lit-bg);
   }
   .btn-ghost {
     background: transparent;
-    border-color: var(--noir-fill);
-    color: var(--noir-text);
+    border-color: var(--lit-fill);
+    color: var(--lit-text);
   }
   .btn:hover { filter: brightness(1.1); }
 </style>
@@ -274,7 +277,7 @@
 <!-- ── STORY MODAL ── -->
 <div class="modal-bg" id="storyModal">
   <div class="modal">
-    <span class="modal-label">✦ CASE FILE ✦</span>
+    <span class="modal-label">— today's poem —</span>
     <h2>The Blue Note Affair</h2>
     <p>The rain came down hard on Delancey Street the night the Blue Note Jazz Club burned.</p>
     <p>Fire marshals pulled the body of club owner “Lucky” Dolan from the wreckage at half past two. Faulty wiring, they said. Case closed. Except Lucky kept the real books — and someone needed those books gone.</p>
@@ -282,7 +285,7 @@
     <hr>
     <p><strong>Can you crack the cipher in 6 guesses?</strong></p>
     <div class="modal-btns">
-      <button class="btn btn-gold" id="startBtn">Begin Investigation</button>
+      <button class="btn btn-gold" id="startBtn">Begin Reading</button>
     </div>
   </div>
 </div>
@@ -290,10 +293,10 @@
 <!-- ── END MODAL ── -->
 <div class="modal-bg gone" id="endModal">
   <div class="modal">
-    <span class="modal-label">✦ CASE CLOSED ✦</span>
+    <span class="modal-label">— verse complete —</span>
     <h2 id="endTitle"></h2>
     <p id="endSub"></p>
-    <p id="endFlav" style="font-style:italic; font-size:0.82rem; color: var(--noir-dim);"></p>
+    <p id="endFlav" style="font-style:italic; font-size:0.82rem; color: var(--lit-dim);"></p>
     <hr>
     <div class="modal-btns">
       <button class="btn btn-ghost" id="playAgainBtn">Try Again</button>
@@ -305,7 +308,7 @@
 <!-- ── GAME ── -->
 <header>
   <h1>Poem</h1>
-  <div class="sub">◆ A Mystery in Six Guesses ◆</div>
+  <div class="sub">— a poem in six guesses —</div>
 </header>
 
 <div id="app">
